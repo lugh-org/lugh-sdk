@@ -1,6 +1,6 @@
 {
   "name": "lugh-sdk",
-  "version": "0.1.0-beta",
+  "version": "0.1.0-beta.0",
   "description": "Lugh SDK — OAuth (browser/server/react) and Credits (api/react) for partner integrations.",
   "type": "module",
   "sideEffects": false,
