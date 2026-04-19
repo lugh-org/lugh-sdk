@@ -1,0 +1,77 @@
+{
+  "name": "lugh-sdk",
+  "version": "0.1.0",
+  "description": "Lugh SDK — OAuth (browser/server/react) and Credits (api/react) for partner integrations.",
+  "type": "module",
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "exports": {
+    "./oauth/browser": {
+      "types": "./dist/oauth/browser/index.d.ts",
+      "import": "./dist/oauth/browser/index.js"
+    },
+    "./oauth/server": {
+      "types": "./dist/oauth/server/index.d.ts",
+      "import": "./dist/oauth/server/index.js"
+    },
+    "./oauth/react": {
+      "types": "./dist/oauth/react/index.d.ts",
+      "import": "./dist/oauth/react/index.js"
+    },
+    "./credits/api": {
+      "types": "./dist/credits/api/index.d.ts",
+      "import": "./dist/credits/api/index.js"
+    },
+    "./credits/react": {
+      "types": "./dist/credits/react/index.d.ts",
+      "import": "./dist/credits/react/index.js"
+    },
+    "./styles.css": "./dist/styles.css"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json && node scripts/copy-assets.mjs",
+    "clean": "rm -rf dist",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "peerDependencies": {
+    "convex": ">=1.34",
+    "react": ">=18"
+  },
+  "peerDependenciesMeta": {
+    "convex": {
+      "optional": true
+    },
+    "react": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/react": "^14.3.1",
+    "@types/node": "^22.0.0",
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.7",
+    "convex": "^1.34.1",
+    "jsdom": "^25.0.1",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.1",
+    "typescript": "^5.6.0",
+    "vitest": "^2.1.0"
+  },
+  "keywords": [
+    "lugh",
+    "oauth2",
+    "pkce",
+    "oidc",
+    "credits",
+    "sdk",
+    "convex",
+    "react"
+  ],
+  "license": "MIT"
+}
