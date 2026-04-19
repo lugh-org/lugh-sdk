@@ -1,9 +1,9 @@
 "use client";
 
-import { useMemo } from "react";
-import { useConvexAuth, useQuery } from "convex/react";
+import { useEffect, useMemo, useState } from "react";
 import { useLugh } from "../../oauth/react/useLugh.js";
-import { getBalanceBreakdown } from "./convex-api.js";
+import { useInternalConvex } from "../../oauth/react/internal-convex.js";
+import { getBalanceBreakdown } from "./cloud-api.js";
 import type {
   LughBalance,
   LughBalanceBreakdown,
@@ -11,24 +11,37 @@ import type {
   UseCreditsResult,
 } from "./types.js";
 
-type Args = { environment?: "production" | "sandbox"; appSlug?: string };
-
 export function useCredits(opts: UseCreditsOptions = {}): UseCreditsResult {
   const { isSignedIn, clientId } = useLugh();
-  const { isAuthenticated } = useConvexAuth();
+  const convex = useInternalConvex();
 
   const env = opts.environment ?? "production";
   const appSlug = opts.appSlug ?? clientId;
 
-  const queryArgs: Args | "skip" = useMemo(() => {
-    if (!isSignedIn || !isAuthenticated) return "skip";
-    if (env === "sandbox") return { environment: "sandbox", appSlug };
-    return {};
-  }, [isSignedIn, isAuthenticated, env, appSlug]);
+  const skip = !isSignedIn || !convex;
+  const argsKey = skip ? null : JSON.stringify({ environment: env === "sandbox" ? "sandbox" : undefined, appSlug: env === "sandbox" ? appSlug : undefined });
 
-  const data = useQuery(getBalanceBreakdown, queryArgs);
+  const [data, setData] = useState<LughBalanceBreakdown | null | undefined>(undefined);
 
-  const loading = isSignedIn && (!isAuthenticated || data === undefined);
+  useEffect(() => {
+    if (skip || !convex) {
+      setData(undefined);
+      return;
+    }
+
+    const args = env === "sandbox"
+      ? { environment: "sandbox" as const, appSlug }
+      : {};
+
+    const unsubscribe = convex.onUpdate(getBalanceBreakdown, args, (result) => {
+      setData(result);
+    });
+
+    return () => { unsubscribe(); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [skip, convex, argsKey]);
+
+  const loading = isSignedIn && data === undefined;
   const breakdown: LughBalanceBreakdown | null = data ?? null;
   const total =
     env === "sandbox" ? breakdown?.sandbox ?? 0 : breakdown?.total ?? 0;
@@ -47,9 +60,7 @@ export function useCredits(opts: UseCreditsOptions = {}): UseCreditsResult {
       breakdown,
       loading,
       error: null,
-      refetch: () => {
-        // Convex queries are reactive; explicit refetch is a no-op.
-      },
+      refetch: () => {},
     }),
     [balance, breakdown, loading],
   );

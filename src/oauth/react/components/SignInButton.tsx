@@ -26,10 +26,14 @@ export function LughSignInButton({
   const t = getMessages(language);
 
   const handleClick = async (): Promise<void> => {
+    console.log("[lugh][button] click", performance.now().toFixed(1));
     onClick?.();
     try {
+      console.log("[lugh][button] calling signIn()", performance.now().toFixed(1));
       await signIn();
+      console.log("[lugh][button] signIn() resolved", performance.now().toFixed(1));
     } catch (err) {
+      console.log("[lugh][button] signIn() threw", err);
       onError?.(err instanceof Error ? err : new Error(String(err)));
     }
   };

@@ -11,6 +11,7 @@ import {
 } from "./storage.js";
 import { authorizeUrl, revokeUrl, tokenUrl } from "./endpoints.js";
 import { EventBus } from "./events.js";
+import { DEFAULT_LANGUAGE, type Language } from "./language.js";
 import type {
   LughAuthEvent,
   LughAuthEventPayload,
@@ -37,6 +38,7 @@ type ResolvedOptions = {
   redirectUri: string;
   apiUrl: string;
   scope: Scope[];
+  language: Language;
   storage: TokenStorage;
   autoRefreshSkewMs: number;
   fetchImpl: typeof fetch;
@@ -78,6 +80,7 @@ export class LughOAuthClient {
       apiUrl: opts.apiUrl.replace(/\/+$/, ""),
       scope:
         opts.scope && opts.scope.length > 0 ? [...opts.scope] : DEFAULT_SCOPE,
+      language: opts.language ?? DEFAULT_LANGUAGE,
       storage: opts.storage ?? new SessionStorageAdapter(),
       autoRefreshSkewMs: opts.autoRefreshSkewMs ?? DEFAULT_REFRESH_SKEW_MS,
       fetchImpl: opts.fetchImpl ?? globalThis.fetch.bind(globalThis),
@@ -144,13 +147,18 @@ export class LughOAuthClient {
     scope?: Scope[];
     prompt?: "consent" | "none";
   } = {}): Promise<never> {
+    console.log("[lugh][client] signIn entry", performance.now().toFixed(1));
     if (typeof window === "undefined") {
       throw new Error("LughOAuthClient.signIn can only run in the browser");
     }
+    console.log("[lugh][client] creating PKCE pair", performance.now().toFixed(1));
     const pair = await createPkcePair();
+    console.log("[lugh][client] PKCE pair created", performance.now().toFixed(1));
     const state = createState();
+    console.log("[lugh][client] state created", performance.now().toFixed(1));
     savePkceVerifier(pair.verifier);
     saveState(state);
+    console.log("[lugh][client] verifier+state saved to sessionStorage", performance.now().toFixed(1));
 
     const scope =
       args.scope && args.scope.length > 0 ? args.scope : this.opts.scope;
@@ -161,9 +169,13 @@ export class LughOAuthClient {
       scope,
       state,
       codeChallenge: pair.challenge,
+      language: this.opts.language,
       ...(args.prompt ? { prompt: args.prompt } : {}),
     });
+    console.log("[lugh][client] authorize URL built", performance.now().toFixed(1), url);
+    console.log("[lugh][client] calling window.location.assign", performance.now().toFixed(1));
     window.location.assign(url);
+    console.log("[lugh][client] location.assign returned — navigation scheduled", performance.now().toFixed(1));
     // `location.assign` navigates away; this promise never resolves.
     return new Promise<never>(() => {});
   }

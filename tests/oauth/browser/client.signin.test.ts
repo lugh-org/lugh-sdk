@@ -55,6 +55,7 @@ describe("LughOAuthClient.signIn", () => {
       redirectUri: "https://partner.example/callback",
       apiUrl: "https://lugh.example",
       scope: ["credits"],
+      language: "pt",
     });
 
     // signIn returns a never-resolving Promise after location.assign.
@@ -65,7 +66,7 @@ describe("LughOAuthClient.signIn", () => {
     expect(assign).toHaveBeenCalledTimes(1);
     const url = new URL(assign.mock.calls[0]![0] as string);
     expect(url.origin + url.pathname).toBe(
-      "https://lugh.example/api/oauth/authorize",
+      "https://lugh.example/pt/oauth/continue",
     );
     expect(url.searchParams.get("response_type")).toBe("code");
     expect(url.searchParams.get("client_id")).toBe("my-app");

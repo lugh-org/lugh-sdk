@@ -20,6 +20,7 @@ export type LughProviderProps = {
   clientId: string;
   redirectUri: string;
   apiUrl: string;
+  cloudUrl?: string;
   scope?: Scope[];
   theme?: Theme;
   language?: Language;

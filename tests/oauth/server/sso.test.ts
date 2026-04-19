@@ -21,13 +21,13 @@ describe("LughSso", () => {
   });
 
   it("createAuthorizationRequest builds a valid URL with PKCE+state", async () => {
-    const sso = new LughSso(baseOpts);
+    const sso = new LughSso({ ...baseOpts, language: "pt" });
     const req = await sso.createAuthorizationRequest({
       scope: ["openid", "credits"],
     });
     const url = new URL(req.url);
     expect(url.origin + url.pathname).toBe(
-      "https://lugh.example/api/oauth/authorize",
+      "https://lugh.example/pt/oauth/continue",
     );
     expect(url.searchParams.get("response_type")).toBe("code");
     expect(url.searchParams.get("client_id")).toBe("my-app");

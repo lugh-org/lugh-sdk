@@ -17,8 +17,6 @@ export type LughCreditsBadgeProps = {
   blockPackLabel?: string;
   /** Text shown when the balance is zero / empty. */
   emptyLabel?: string;
-  /** Link target for the "get more credits" action. */
-  upgradeUrl?: string;
   className?: string;
 };
 
@@ -45,7 +43,6 @@ export function LughCreditsBadge({
   blockSubscriptionLabel = (plan) => plan.toUpperCase(),
   blockPackLabel,
   emptyLabel,
-  upgradeUrl,
   className,
 }: LughCreditsBadgeProps): JSX.Element | null {
   const { balance, breakdown, loading, error } = useCredits();
@@ -54,7 +51,6 @@ export function LughCreditsBadge({
   const resolvedTitle = title ?? t.creditsTitle;
   const resolvedPackLabel = blockPackLabel ?? t.creditsPackLabel;
   const resolvedEmptyLabel = emptyLabel ?? t.creditsEmpty;
-  const resolvedUpgradeUrl = upgradeUrl ?? DEFAULT_PRICING_URL;
   const [open, setOpen] = useState<boolean>(false);
   const rootRef = useRef<HTMLDivElement>(null);
 
@@ -160,28 +156,6 @@ export function LughCreditsBadge({
             <p className="lugh-credits__empty">{resolvedEmptyLabel}</p>
           )}
 
-          <a
-            className="lugh-credits__upgrade"
-            href={resolvedUpgradeUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <svg
-              viewBox="0 0 24 24"
-              width="14"
-              height="14"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <path d="M12 19V5" />
-              <path d="m5 12 7-7 7 7" />
-            </svg>
-            {t.creditsUpgrade}
-          </a>
         </div>
       )}
     </div>

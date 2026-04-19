@@ -4,6 +4,7 @@ import {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type CSSProperties,
   type JSX,
@@ -12,17 +13,15 @@ import { LughOAuthClient } from "../browser/client.js";
 import { decodeIdToken } from "../browser/idtoken.js";
 import type { LughTokens, Scope } from "../browser/types.js";
 import { LughContext } from "./context.js";
+import { InternalConvexContext } from "./internal-convex.js";
 import { DEFAULT_LANGUAGE } from "./i18n.js";
 import type { LughContextValue, LughProviderProps, LughUserClaims } from "./types.js";
-
-// `LughProvider` does NOT mount a ConvexProvider. Consumers plug
-// `fetchAccessToken` into `<ConvexProviderWithAuth useAuth={...} />` on
-// their own to keep this provider backend-agnostic.
 export function LughProvider(props: LughProviderProps): JSX.Element {
   const {
     clientId,
     redirectUri,
     apiUrl,
+    cloudUrl,
     scope,
     theme = "system",
     language = DEFAULT_LANGUAGE,
@@ -53,6 +52,7 @@ export function LughProvider(props: LughProviderProps): JSX.Element {
       clientId,
       redirectUri,
       apiUrl: resolvedApiUrl,
+      language,
       ...(scope ? { scope } : {}),
     };
 
@@ -98,12 +98,15 @@ export function LughProvider(props: LughProviderProps): JSX.Element {
     };
     // onError intentionally not in deps — it's a callback, not identity-stable.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [clientId, redirectUri, resolvedApiUrl, scopeKey]);
+  }, [clientId, redirectUri, resolvedApiUrl, scopeKey, language]);
 
   const signIn = useCallback(
     async (args?: { scope?: Scope[] }): Promise<void> => {
+      console.log("[lugh][provider] signIn entry", performance.now().toFixed(1), { hasClient: Boolean(client) });
       if (!client) throw new Error("LughProvider: client not initialized");
+      console.log("[lugh][provider] delegating to client.signIn", performance.now().toFixed(1));
       await client.signIn(args ?? {});
+      console.log("[lugh][provider] client.signIn returned (unexpected — should navigate)", performance.now().toFixed(1));
     },
     [client],
   );
@@ -164,6 +167,34 @@ export function LughProvider(props: LughProviderProps): JSX.Element {
     ],
   );
 
+  // --- Internal ConvexClient (used by credits hooks) ---
+  const convexClientRef = useRef<import("convex/browser").ConvexClient | null>(null);
+  const [convexClient, setConvexClient] = useState<import("convex/browser").ConvexClient | null>(null);
+
+  useEffect(() => {
+    if (!cloudUrl) return;
+    let cancelled = false;
+
+    import("convex/browser").then(({ ConvexClient }) => {
+      if (cancelled) return;
+      const cx = new ConvexClient(cloudUrl);
+      convexClientRef.current = cx;
+      setConvexClient(cx);
+    });
+
+    return () => {
+      cancelled = true;
+      convexClientRef.current?.close();
+      convexClientRef.current = null;
+      setConvexClient(null);
+    };
+  }, [cloudUrl]);
+
+  useEffect(() => {
+    if (!convexClient) return;
+    convexClient.setAuth(fetchAccessToken);
+  }, [convexClient, fetchAccessToken]);
+
   const wrapperStyle: CSSProperties | undefined = primaryColor
     ? ({
         "--lugh-primary": primaryColor,
@@ -173,14 +204,16 @@ export function LughProvider(props: LughProviderProps): JSX.Element {
 
   return (
     <LughContext.Provider value={value}>
-      <div
-        className="lugh-root"
-        data-lugh-theme={theme === "system" ? undefined : theme}
-        lang={language}
-        {...(wrapperStyle ? { style: wrapperStyle } : {})}
-      >
-        {children}
-      </div>
+      <InternalConvexContext.Provider value={convexClient}>
+        <div
+          className="lugh-root"
+          data-lugh-theme={theme === "system" ? undefined : theme}
+          lang={language}
+          {...(wrapperStyle ? { style: wrapperStyle } : {})}
+        >
+          {children}
+        </div>
+      </InternalConvexContext.Provider>
     </LughContext.Provider>
   );
 }

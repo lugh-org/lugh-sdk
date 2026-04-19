@@ -4,7 +4,8 @@ import {
   consumeCreditRequest as consumeRef,
   getCreditRequest as getRef,
   refundCreditRequest as refundRef,
-} from "./convex-api.js";
+  validateAction as validateRef,
+} from "./cloud-api.js";
 import type {
   ConsumeResult,
   CreditRequest,
@@ -74,6 +75,16 @@ export class LughCreditsClient {
       appSlug: this.appSlug,
       userId: args.userId,
       requestId: args.requestId,
+    });
+  }
+
+  async validateAction(args: {
+    requestId: string;
+  }): Promise<{ valid: boolean }> {
+    return this.convex.query(validateRef, {
+      requestId: args.requestId,
+      appSecretKey: this.appSecret,
+      expectedAppSlug: this.appSlug,
     });
   }
 }

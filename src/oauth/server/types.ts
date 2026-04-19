@@ -37,12 +37,15 @@ export interface TokenStore {
   delete(userId: string): Promise<void>;
 }
 
+import type { Language } from "../browser/language.js";
+
 export type LughSsoOptions = {
   clientId: string;
   clientSecret?: string;
   redirectUri: string;
   apiUrl: string;
   scope?: string[];
+  language?: Language;
   refreshSkewMs?: number;
   fetchImpl?: typeof fetch;
 };

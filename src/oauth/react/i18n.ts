@@ -1,7 +1,16 @@
-export type Language = "pt" | "en" | "es";
+import {
+  DEFAULT_LANGUAGE,
+  SUPPORTED_LANGUAGES,
+  isSupportedLanguage,
+  type Language,
+} from "../browser/language.js";
 
-export const SUPPORTED_LANGUAGES: readonly Language[] = ["pt", "en", "es"];
-export const DEFAULT_LANGUAGE: Language = "en";
+export {
+  DEFAULT_LANGUAGE,
+  SUPPORTED_LANGUAGES,
+  isSupportedLanguage,
+  type Language,
+};
 
 export type Messages = {
   signInWithLugh: string;
@@ -68,10 +77,6 @@ const es: Messages = {
 };
 
 const MESSAGES: Record<Language, Messages> = { pt, en, es };
-
-export function isSupportedLanguage(lang: string): lang is Language {
-  return (SUPPORTED_LANGUAGES as readonly string[]).includes(lang);
-}
 
 export function getMessages(lang: Language | undefined): Messages {
   if (lang && isSupportedLanguage(lang)) return MESSAGES[lang];

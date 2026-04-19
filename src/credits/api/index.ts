@@ -15,4 +15,6 @@ export {
   type RefundCreditRequestRef,
   type CancelCreditRequestRef,
   type GetCreditRequestRef,
-} from "./convex-api.js";
+  validateAction,
+  type ValidateActionRef,
+} from "./cloud-api.js";

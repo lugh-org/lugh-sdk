@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useQuery } from "convex/react";
-import { listAppActions } from "./convex-api.js";
+import { useInternalConvex } from "../../oauth/react/internal-convex.js";
+import { listAppActions } from "./cloud-api.js";
 import type { LughAppAction, UseActionsResult } from "./types.js";
 
 const CACHE_PREFIX = "lugh:actions:";
@@ -37,21 +37,35 @@ function writeCached(appSlug: string, actions: LughAppAction[]): void {
 }
 
 export function useActions(appSlug: string): UseActionsResult {
+  const convex = useInternalConvex();
+
   const [cached, setCached] = useState<LughAppAction[] | null>(() =>
     readCached(appSlug),
   );
+  const [fresh, setFresh] = useState<LughAppAction[] | undefined>(undefined);
 
   useEffect(() => {
     setCached(readCached(appSlug));
   }, [appSlug]);
 
-  const fresh = useQuery(listAppActions, { appSlug });
-
   useEffect(() => {
-    if (fresh === undefined) return;
-    writeCached(appSlug, fresh);
-    setCached(fresh);
-  }, [appSlug, fresh]);
+    if (!convex) {
+      setFresh(undefined);
+      return;
+    }
+
+    const unsubscribe = convex.onUpdate(
+      listAppActions,
+      { appSlug },
+      (result) => {
+        setFresh(result);
+        writeCached(appSlug, result);
+        setCached(result);
+      },
+    );
+
+    return () => { unsubscribe(); };
+  }, [convex, appSlug]);
 
   const actions = fresh ?? cached ?? [];
   const loading = fresh === undefined && cached === null;

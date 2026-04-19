@@ -262,34 +262,7 @@
   color: var(--lugh-muted-foreground);
   margin: 0;
 }
-.lugh-credits__upgrade {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.375rem;
-  margin-top: 0.875rem;
-  padding: 0.5rem 0.75rem;
-  width: 100%;
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--lugh-primary-foreground, #fff);
-  background: var(--lugh-primary);
-  border: 1px solid var(--lugh-primary);
-  border-radius: var(--lugh-radius);
-  text-decoration: none;
-  cursor: pointer;
-  transition: opacity 150ms ease, transform 150ms ease;
-}
-.lugh-credits__upgrade:hover {
-  opacity: 0.9;
-}
-.lugh-credits__upgrade:active {
-  transform: translateY(1px);
-}
-.lugh-credits__upgrade:focus-visible {
-  outline: 2px solid var(--lugh-primary);
-  outline-offset: 2px;
-}
+
 
 .lugh-user {
   position: relative;

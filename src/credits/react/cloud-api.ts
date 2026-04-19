@@ -1,6 +1,6 @@
 // Public FunctionReferences for `partnerApi:*` in lugh-app — the
 // OAuth-authenticated entrypoints the browser consumes. Backend only
-// (appSecret) calls live in `credits/api/convex-api.ts`.
+// (appSecret) calls live in `credits/api/cloud-api.ts`.
 
 import { makeFunctionReference, type FunctionReference } from "convex/server";
 import type {

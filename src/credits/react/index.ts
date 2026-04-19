@@ -33,4 +33,4 @@ export {
   type GetBalanceBreakdownRef,
   type ListAppActionsRef,
   type OpenCreditRequestRef,
-} from "./convex-api.js";
+} from "./cloud-api.js";

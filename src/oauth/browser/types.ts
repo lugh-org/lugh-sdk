@@ -1,3 +1,5 @@
+import type { Language } from "./language.js";
+
 export type Scope =
   | "openid"
   | "profile"
@@ -19,6 +21,7 @@ export type LughOAuthOptions = {
   redirectUri: string;
   apiUrl: string;
   scope?: Scope[];
+  language?: Language;
   storage?: TokenStorage;
   autoRefreshSkewMs?: number;
   fetchImpl?: typeof fetch;

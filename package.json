@@ -33,6 +33,7 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.build.json && node scripts/copy-assets.mjs",
+    "dev": "node scripts/copy-assets.mjs && tsc -p tsconfig.build.json --watch --preserveWatchOutput",
     "clean": "rm -rf dist",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
