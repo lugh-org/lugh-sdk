@@ -102,11 +102,8 @@ export function LughProvider(props: LughProviderProps): JSX.Element {
 
   const signIn = useCallback(
     async (args?: { scope?: Scope[] }): Promise<void> => {
-      console.log("[lugh][provider] signIn entry", performance.now().toFixed(1), { hasClient: Boolean(client) });
       if (!client) throw new Error("LughProvider: client not initialized");
-      console.log("[lugh][provider] delegating to client.signIn", performance.now().toFixed(1));
       await client.signIn(args ?? {});
-      console.log("[lugh][provider] client.signIn returned (unexpected — should navigate)", performance.now().toFixed(1));
     },
     [client],
   );

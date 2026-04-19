@@ -37,7 +37,7 @@ export type LughConsumeCreditsButtonProps = {
   environment?: LughEnvironment;
   idempotencyKey?: string;
   upgradeUrl?: string;
-  children?: ReactNode;
+  children?: ReactNode | ((cost: number | null) => ReactNode);
   className?: string;
   classOverride?: string;
   disabled?: boolean;
@@ -69,7 +69,7 @@ export function LughConsumeCreditsButton({
   const { balance } = useCredits(
     environment ? { environment, appSlug: resolvedAppSlug } : { appSlug: resolvedAppSlug },
   );
-  const consume = useConsumeCredits();
+  const createConsumeRequest = useConsumeCredits();
   const [loading, setLoading] = useState<boolean>(false);
   const [insufficient, setInsufficient] = useState<boolean>(false);
   const resolvedUpgradeUrl = upgradeUrl ?? DEFAULT_PRICING_URL;
@@ -100,7 +100,7 @@ export function LughConsumeCreditsButton({
     setInsufficient(false);
     setLoading(true);
     try {
-      const ctx = await consume({
+      const ctx = await createConsumeRequest({
         appSlug: resolvedAppSlug,
         actionSlug,
         ...(environment ? { environment } : {}),
@@ -115,9 +115,12 @@ export function LughConsumeCreditsButton({
     }
   };
 
+  const resolvedChildren =
+    typeof children === "function" ? children(cost) : children;
+
   const label = loading
     ? loadingLabel ?? t.consumeLoading
-    : children ?? (cost !== null ? t.consumeDefault(cost) : t.consumeLoading);
+    : resolvedChildren ?? (cost !== null ? t.consumeDefault(cost) : t.consumeLoading);
 
   return (
     <div className="lugh-consume">
