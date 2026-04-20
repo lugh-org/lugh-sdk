@@ -11,7 +11,7 @@ import {
 } from "./storage.js";
 import { authorizeUrl, revokeUrl, tokenUrl } from "./endpoints.js";
 import { EventBus } from "./events.js";
-import { DEFAULT_LANGUAGE, type Language } from "./language.js";
+import { detectBrowserLanguage, type Language } from "./language.js";
 import type {
   LughAuthEvent,
   LughAuthEventPayload,
@@ -80,7 +80,7 @@ export class LughOAuthClient {
       apiUrl: opts.apiUrl.replace(/\/+$/, ""),
       scope:
         opts.scope && opts.scope.length > 0 ? [...opts.scope] : DEFAULT_SCOPE,
-      language: opts.language ?? DEFAULT_LANGUAGE,
+      language: opts.language ?? detectBrowserLanguage(),
       storage: opts.storage ?? new SessionStorageAdapter(),
       autoRefreshSkewMs: opts.autoRefreshSkewMs ?? DEFAULT_REFRESH_SKEW_MS,
       fetchImpl: opts.fetchImpl ?? globalThis.fetch.bind(globalThis),
@@ -164,7 +164,6 @@ export class LughOAuthClient {
       scope,
       state,
       codeChallenge: pair.challenge,
-      language: this.opts.language,
       ...(args.prompt ? { prompt: args.prompt } : {}),
     });
     window.location.assign(url);

@@ -1,6 +1,7 @@
 import {
   DEFAULT_LANGUAGE,
   SUPPORTED_LANGUAGES,
+  detectBrowserLanguage,
   isSupportedLanguage,
   type Language,
 } from "../browser/language.js";
@@ -8,6 +9,7 @@ import {
 export {
   DEFAULT_LANGUAGE,
   SUPPORTED_LANGUAGES,
+  detectBrowserLanguage,
   isSupportedLanguage,
   type Language,
 };

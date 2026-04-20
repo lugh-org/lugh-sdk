@@ -14,7 +14,7 @@ import { decodeIdToken } from "../browser/idtoken.js";
 import type { LughTokens, Scope } from "../browser/types.js";
 import { LughContext } from "./context.js";
 import { InternalConvexContext } from "./internal-convex.js";
-import { DEFAULT_LANGUAGE } from "./i18n.js";
+import { detectBrowserLanguage } from "../browser/language.js";
 import type { LughContextValue, LughProviderProps, LughUserClaims } from "./types.js";
 export function LughProvider(props: LughProviderProps): JSX.Element {
   const {
@@ -24,7 +24,7 @@ export function LughProvider(props: LughProviderProps): JSX.Element {
     cloudUrl,
     scope,
     theme = "system",
-    language = DEFAULT_LANGUAGE,
+    language = detectBrowserLanguage(),
     primaryColor,
     children,
     onError,

@@ -1,4 +1,3 @@
-import { DEFAULT_LANGUAGE, type Language } from "../browser/language.js";
 import type {
   AuthorizationRequest,
   LughIdClaims,
@@ -25,7 +24,6 @@ type ResolvedOptions = {
   redirectUri: string;
   apiUrl: string;
   scope: string[];
-  language: Language;
   refreshSkewMs: number;
   fetchImpl: typeof fetch;
 };
@@ -44,7 +42,6 @@ export class LughSso {
       redirectUri: opts.redirectUri,
       apiUrl: opts.apiUrl.replace(/\/+$/, ""),
       scope: opts.scope && opts.scope.length > 0 ? [...opts.scope] : DEFAULT_SCOPE,
-      language: opts.language ?? DEFAULT_LANGUAGE,
       refreshSkewMs: opts.refreshSkewMs ?? DEFAULT_REFRESH_SKEW_MS,
       fetchImpl: opts.fetchImpl ?? globalThis.fetch.bind(globalThis),
     };
@@ -74,14 +71,12 @@ export class LughSso {
     scope?: string[];
     state?: string;
     nonce?: string;
-    language?: Language;
   } = {}): Promise<AuthorizationRequest> {
     const codeVerifier = randomString(64);
     const codeChallenge = base64url(await sha256(codeVerifier));
     const state = args.state ?? randomString(32);
     const nonce = args.nonce ?? randomString(24);
     const scope = args.scope && args.scope.length > 0 ? args.scope : this.opts.scope;
-    const language = args.language ?? this.opts.language;
 
     const params = new URLSearchParams({
       response_type: "code",
@@ -94,7 +89,7 @@ export class LughSso {
       code_challenge_method: "S256",
     });
     return {
-      url: `${this.opts.apiUrl}/${language}/oauth/continue?${params.toString()}`,
+      url: `${this.opts.apiUrl}/oauth/continue?${params.toString()}`,
       state,
       nonce,
       codeVerifier,

@@ -1,4 +1,3 @@
-import type { Language } from "./language.js";
 import type { Scope } from "./types.js";
 
 export function authorizeUrl(args: {
@@ -10,7 +9,6 @@ export function authorizeUrl(args: {
   codeChallenge: string;
   prompt?: "consent" | "none";
   nonce?: string;
-  language?: Language;
 }): string {
   const params = new URLSearchParams({
     response_type: "code",
@@ -23,7 +21,7 @@ export function authorizeUrl(args: {
   });
   if (args.prompt) params.set("prompt", args.prompt);
   if (args.nonce) params.set("nonce", args.nonce);
-  return `${args.apiUrl}/${args.language}/oauth/continue?${params.toString()}`;
+  return `${args.apiUrl}/oauth/continue?${params.toString()}`;
 }
 
 export function tokenUrl(apiUrl: string): string {

@@ -5,6 +5,7 @@ export { decodeIdToken } from "./idtoken.js";
 export {
   DEFAULT_LANGUAGE,
   SUPPORTED_LANGUAGES,
+  detectBrowserLanguage,
   isSupportedLanguage,
   type Language,
 } from "./language.js";

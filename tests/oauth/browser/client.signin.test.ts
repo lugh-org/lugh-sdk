@@ -66,7 +66,7 @@ describe("LughOAuthClient.signIn", () => {
     expect(assign).toHaveBeenCalledTimes(1);
     const url = new URL(assign.mock.calls[0]![0] as string);
     expect(url.origin + url.pathname).toBe(
-      "https://lugh.example/pt/oauth/continue",
+      "https://lugh.example/oauth/continue",
     );
     expect(url.searchParams.get("response_type")).toBe("code");
     expect(url.searchParams.get("client_id")).toBe("my-app");

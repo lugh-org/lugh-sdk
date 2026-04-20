@@ -6,7 +6,7 @@ import { useLugh } from "../../../oauth/react/useLugh.js";
 import { getMessages } from "../../../oauth/react/i18n.js";
 import type { LughCreditBlock } from "../types.js";
 
-export const DEFAULT_PRICING_URL = "https://app.lugh.digital/en/pricing";
+export const DEFAULT_PRICING_URL = "https://app.lugh.digital/pricing";
 
 export type LughCreditsBadgeProps = {
   /** Title rendered inside the popover. Default: i18n `creditsTitle`. */
