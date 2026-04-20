@@ -95,11 +95,12 @@ export class LughCreditsClient {
 
   async validateAction(args: {
     requestId: string;
+    expectedActionSlug: string;
   }): Promise<{ valid: boolean }> {
     return this.convex.query(validateRef, {
       requestId: args.requestId,
       appSecretKey: this.appSecret,
-      expectedAppSlug: this.appSlug,
+      expectedActionSlug: args.expectedActionSlug,
     });
   }
 }

@@ -61,7 +61,7 @@ export type ValidateActionRef = FunctionReference<
   {
     requestId: string;
     appSecretKey: string;
-    expectedAppSlug: string;
+    expectedActionSlug: string;
   },
   { valid: boolean }
 >;
