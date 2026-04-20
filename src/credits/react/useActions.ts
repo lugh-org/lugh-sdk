@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useLugh } from "../../oauth/react/useLugh.js";
 import { useInternalConvex } from "../../oauth/react/internal-convex.js";
 import { listAppActions } from "./cloud-api.js";
 import type { LughAppAction, UseActionsResult } from "./types.js";
@@ -36,8 +37,10 @@ function writeCached(appSlug: string, actions: LughAppAction[]): void {
   }
 }
 
-export function useActions(appSlug: string): UseActionsResult {
+export function useActions(appSlugOverride?: string): UseActionsResult {
+  const { clientId } = useLugh();
   const convex = useInternalConvex();
+  const appSlug = appSlugOverride ?? clientId;
 
   const [cached, setCached] = useState<LughAppAction[] | null>(() =>
     readCached(appSlug),

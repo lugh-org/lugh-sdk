@@ -82,6 +82,23 @@ export const getCreditRequest = makeFunctionReference<"query">(
   "partnerServerApi:getCreditRequest",
 ) as GetCreditRequestRef;
 
+export type RefundOrCancelCreditRequestRef = FunctionReference<
+  "mutation",
+  "public",
+  {
+    appSecret: string;
+    userId: string;
+    appSlug: string;
+    requestId: string;
+    reason?: string;
+  },
+  { success: true; action: "cancelled" | "refunded" }
+>;
+
+export const refundOrCancelCreditRequest = makeFunctionReference<"mutation">(
+  "partnerServerApi:refundOrCancelCreditRequest",
+) as RefundOrCancelCreditRequestRef;
+
 export const validateAction = makeFunctionReference<"query">(
   "partnerServerApi:validateAction",
 ) as ValidateActionRef;

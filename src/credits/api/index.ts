@@ -15,6 +15,8 @@ export {
   type RefundCreditRequestRef,
   type CancelCreditRequestRef,
   type GetCreditRequestRef,
+  refundOrCancelCreditRequest,
+  type RefundOrCancelCreditRequestRef,
   validateAction,
   type ValidateActionRef,
 } from "./cloud-api.js";

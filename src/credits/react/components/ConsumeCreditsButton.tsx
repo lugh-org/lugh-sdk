@@ -32,7 +32,6 @@ export class ActionNotFoundError extends Error {
 }
 
 export type LughConsumeCreditsButtonProps = {
-  appSlug?: string;
   actionSlug: string;
   environment?: LughEnvironment;
   idempotencyKey?: string;
@@ -48,7 +47,6 @@ export type LughConsumeCreditsButtonProps = {
 };
 
 export function LughConsumeCreditsButton({
-  appSlug,
   actionSlug,
   environment,
   idempotencyKey,
@@ -62,12 +60,11 @@ export function LughConsumeCreditsButton({
   onSuccess,
   onError,
 }: LughConsumeCreditsButtonProps): JSX.Element {
-  const { isSignedIn, clientId, language } = useLugh();
+  const { isSignedIn, language } = useLugh();
   const t = getMessages(language);
-  const resolvedAppSlug = appSlug ?? clientId;
-  const { actions, loading: actionsLoading, bySlug } = useActions(resolvedAppSlug);
+  const { actions, loading: actionsLoading, bySlug } = useActions();
   const { balance } = useCredits(
-    environment ? { environment, appSlug: resolvedAppSlug } : { appSlug: resolvedAppSlug },
+    environment ? { environment } : {},
   );
   const createConsumeRequest = useConsumeCredits();
   const [loading, setLoading] = useState<boolean>(false);
@@ -101,7 +98,6 @@ export function LughConsumeCreditsButton({
     setLoading(true);
     try {
       const ctx = await createConsumeRequest({
-        appSlug: resolvedAppSlug,
         actionSlug,
         ...(environment ? { environment } : {}),
         ...(idempotencyKey ? { idempotencyKey } : {}),

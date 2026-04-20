@@ -4,6 +4,7 @@ import {
   consumeCreditRequest as consumeRef,
   getCreditRequest as getRef,
   refundCreditRequest as refundRef,
+  refundOrCancelCreditRequest as refundOrCancelRef,
   validateAction as validateRef,
 } from "./cloud-api.js";
 import type {
@@ -75,6 +76,20 @@ export class LughCreditsClient {
       appSlug: this.appSlug,
       userId: args.userId,
       requestId: args.requestId,
+    });
+  }
+
+  async refundOrCancelCreditRequest(args: {
+    userId: string;
+    requestId: string;
+    reason?: string;
+  }): Promise<{ success: true; action: "cancelled" | "refunded" }> {
+    return this.convex.mutation(refundOrCancelRef, {
+      appSecret: this.appSecret,
+      appSlug: this.appSlug,
+      userId: args.userId,
+      requestId: args.requestId,
+      ...(args.reason !== undefined && { reason: args.reason }),
     });
   }
 
