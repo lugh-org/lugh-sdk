@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import type { LughOAuthClient } from "../browser/client.js";
-import type { Scope } from "../browser/types.js";
+import type { LughEnvironment, Scope } from "../browser/types.js";
 import type { Language } from "./i18n.js";
 
 export type Theme = "light" | "dark" | "system";
@@ -22,6 +22,13 @@ export type LughProviderProps = {
   apiUrl: string;
   cloudUrl?: string;
   scope?: Scope[];
+  // Declara o ambiente que o app está rodando. Vai como query param no
+  // `/oauth/continue` e é a única fonte de verdade pra os hooks de
+  // credits (useCredits, useConsumeCredits, LughConsumeCreditsButton).
+  // Default: "production".
+  //   - "production" — exige app aprovado pela equipe Lugh
+  //   - "sandbox"    — só o próprio developer do app consegue autorizar
+  environment?: LughEnvironment;
   theme?: Theme;
   language?: Language;
   primaryColor?: string;

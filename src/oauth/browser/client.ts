@@ -165,6 +165,7 @@ export class LughOAuthClient {
       state,
       codeChallenge: pair.challenge,
       ...(args.prompt ? { prompt: args.prompt } : {}),
+      ...(this.opts.environment ? { environment: this.opts.environment } : {}),
     });
     window.location.assign(url);
     // `location.assign` navigates away; this promise never resolves.

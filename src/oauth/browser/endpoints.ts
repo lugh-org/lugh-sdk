@@ -1,4 +1,4 @@
-import type { Scope } from "./types.js";
+import type { LughEnvironment, Scope } from "./types.js";
 
 export function authorizeUrl(args: {
   apiUrl: string;
@@ -9,6 +9,7 @@ export function authorizeUrl(args: {
   codeChallenge: string;
   prompt?: "consent" | "none";
   nonce?: string;
+  environment?: LughEnvironment;
 }): string {
   const params = new URLSearchParams({
     response_type: "code",
@@ -21,6 +22,9 @@ export function authorizeUrl(args: {
   });
   if (args.prompt) params.set("prompt", args.prompt);
   if (args.nonce) params.set("nonce", args.nonce);
+  // `environment` é extensão Lugh (não do RFC 6749). Só inclui se o app
+  // declarou no provider — quando ausente, o server assume "production".
+  if (args.environment) params.set("environment", args.environment);
   return `${args.apiUrl}/oauth/continue?${params.toString()}`;
 }
 
