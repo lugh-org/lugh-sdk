@@ -6,7 +6,7 @@ import type {
   LughUserinfo,
 } from "./types.js";
 
-const DEFAULT_SCOPE = ["openid", "profile", "email", "credits", "offline_access"];
+const DEFAULT_SCOPE = ["openid", "profile", "email", "credits"];
 const DEFAULT_REFRESH_SKEW_MS = 60_000;
 
 type TokenResponse = {

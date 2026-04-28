@@ -4,8 +4,7 @@ export type Scope =
   | "openid"
   | "profile"
   | "email"
-  | "credits"
-  | "offline_access";
+  | "credits";
 
 // Ambiente de execução declarado pelo app no `LughProvider`. Vai como
 // query param no `/oauth/continue` e é validado server-side:
